@@ -14,15 +14,14 @@ knit:
 
 ```{r setup, include=FALSE}
 library(knitr)
-
 opts_chunk$set(warning=F, message=F, echo = T)
-
 ```
 
 ```{r}
 library(readr)
 
-# Reading in the data from Tidy Tuesday GitHub Repo
+# Reading in the data originally from Tidy Tuesday GitHub Repo
+# https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-08-20/nuclear_explosions.csv
 nuclear_explosions <- read_csv("nuclearExplosionRawData.csv")
 
 ```
@@ -41,6 +40,6 @@ p1 <- nuclear_explosions %>%
   scale_x_continuous(n.breaks = 12) +
   labs(title = "Nuclear Explosions Per Year By Country (1945-1998)", x = "Year", y = "Number of Explosions") +
   theme_clean()
-  
+
 ggplotly(p1)
 ```
