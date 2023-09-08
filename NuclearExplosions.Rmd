@@ -16,9 +16,10 @@ knit:
 library(knitr)
 
 opts_chunk$set(warning=F, message=F, echo = T)
+
 ```
 
-```{r reading data, warnings=F}
+```{r}
 library(readr)
 
 # Reading in the data from Tidy Tuesday GitHub Repo
@@ -28,7 +29,7 @@ write.csv(nuclear_explosions, "nuclearExplosionRawData.csv")
 
 ```
 
-```{r plot explosions by year with vountry fill}
+```{r}
 library(tidyverse)
 library(ggthemes)
 library(plotly)
