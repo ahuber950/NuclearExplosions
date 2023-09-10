@@ -2,7 +2,9 @@
 title: "Nuclear Explosions"
 author: "Alex Huber"
 date: "2023-09-07"
-output: html_document
+output:
+  html_document:
+    toc: true
 knit: 
   (function(input, ...) {
     rmarkdown::render(
@@ -14,9 +16,10 @@ knit:
 
 ```{r setup, include=FALSE}
 library(knitr)
-opts_chunk$set(warning=F, message=F, echo = T)
+opts_chunk$set(warning=F, message=F, echo = T, out.width="100%")
 ```
 
+### Reading in Data
 ```{r}
 library(readr)
 
@@ -26,20 +29,28 @@ nuclear_explosions <- read_csv("nuclearExplosionRawData.csv")
 
 ```
 
+### Explosions Per Year By Country
 ```{r}
 library(tidyverse)
 library(ggthemes)
 library(plotly)
 
-# Create ggplot object that displays nuclear explosions per year by country
-p1 <- nuclear_explosions %>%
+# Create dataframe that summarizes the nuber of explosions by country and year
+year_country_data <- nuclear_explosions %>%
   group_by(year, country) %>%
-  summarize(n = n()) %>%
-  ggplot() +
-  geom_col(aes(x = year, y = n, fill = country)) +
-  scale_x_continuous(n.breaks = 12) +
-  labs(title = "Nuclear Explosions Per Year By Country (1945-1998)", x = "Year", y = "Number of Explosions") +
-  theme_clean()
+  summarize(n = n())
 
-ggplotly(p1)
+# Create ggplot object that displays nuclear explosions per year by country
+p1 <- plot_ly(data = year_country_data,
+              x = ~year,
+              y = ~n,
+              type = "bar",
+              color = ~country,
+              text = ~country,
+              hovertemplate = "%{x}<br>%{text}: %{y}<extra></extra>") %>%
+  layout(barmode = "stack")
+
+p1
+
 ```
+
