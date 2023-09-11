@@ -45,40 +45,65 @@ p1 <- plot_ly(data = year_country_data,
               y = ~n,
               type = "bar",
               color = ~country,
-              text = ~paste0(year, "<br>", country, ":", n),
+              text = ~paste0(year, "<br>", country, ": ", n),
               hoverinfo = "text") %>%
-  layout(barmode = "stack")
+  layout(title = "Global Nuclear Explosions (1945-1998)",
+         xaxis = list(title = "Year"),
+         yaxis = list(title = "Number of Explosions"),
+         barmode = "stack",
+         plot_bgcolor = "#e5ecf6")
 
 p1
 
 ```
 
-### Explosions Global Distribution
+### Type of Explosion Breakdown
 ```{r}
 
-# Create plotly object that shows locations of all explosions
-p2 <- plot_geo(nuclear_explosions, sizes = c(10,500)) %>%
-  add_markers(x = ~longitude,
-              y = ~latitude,
-              color = ~country,
-              size = ~yield_lower,
-              text = ~paste0(year, "<br>", country, "<br>", yield_lower, " kilotons TNT"),
+# Renaming and generalizing categories of explosion types
+nuclear_explosions$type <- gsub("AIRDROP|ATMOSPH$|BALLOON|ROCKET", "ATMOSPHERIC", nuclear_explosions$type)
+nuclear_explosions$type <- gsub("CRATER|^SURFACE|TOWER", "EARTH SURFACE", nuclear_explosions$type)
+nuclear_explosions$type <- gsub("BARGE|SHIP|WATER SU$|WATERSUR", "WATER SURFACE", nuclear_explosions$type)
+nuclear_explosions$type <- gsub("UG|TUNNEL|SHAFT.*|MINE|GALLERY", "UNDERGROUND", nuclear_explosions$type)
+nuclear_explosions$type <- gsub("UW", "UNDERWATER", nuclear_explosions$type)
+
+
+# Create dataframe that summarizes the number of explosions by country and year
+type_data <- nuclear_explosions %>%
+  group_by(type) %>%
+  summarize(n = n())
+
+# Create plotly object that displays type distributions of global nuclear explosions 
+p2 <- plot_ly(data = type_data,
+              type = "pie",
+              labels = ~type,
+              values = ~n,
+              textinfo = "percent",
+              text = ~paste0(type, "<br>", n, " events<br>"),
               hoverinfo = "text") %>%
-  layout(title = list(text = "Global Nuclear Explosions from 1945 to 1998", font = list(size = 20), y = 0.96),
-         legend = list(y = 0.85),
-         geo = list(showcountries = TRUE, showland = TRUE, showocean = TRUE, landcolor = "bbdaa4", oceancolor = "a7cdf2"),
-         margin = list(t = 0, b = 0, l = 10, r = 10))
+  layout(title = "Type Distribution of Global Nuclear Explosions (1945-1998)")
 
 p2
 
 ```
 
 
+### Explosions Global Distribution
+```{r}
 
+# Create plotly object that shows locations of all explosions
+p3 <- plot_geo(nuclear_explosions, sizes = c(10,500)) %>%
+  add_markers(x = ~longitude,
+              y = ~latitude,
+              color = ~country,
+              size = ~yield_lower,
+              text = ~paste0(year, "<br>", country, "<br>", yield_lower, " kilotons TNT"),
+              hoverinfo = "text") %>%
+  layout(title = list(text = "Global Nuclear Explosions (1945-1998)", font = list(size = 20), y = 0.96),
+         legend = list(y = 0.85),
+         geo = list(showcountries = TRUE, showland = TRUE, showocean = TRUE, landcolor = "bbdaa4", oceancolor = "a7cdf2"),
+         margin = list(t = 0, b = 0, l = 10, r = 10))
 
+p3
 
-
-
-
-
-
+```
