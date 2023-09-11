@@ -32,7 +32,6 @@ nuclear_explosions <- read_csv("nuclearExplosionRawData.csv")
 ### Explosions Per Year By Country
 ```{r}
 library(tidyverse)
-library(ggthemes)
 library(plotly)
 
 # Create dataframe that summarizes the nuber of explosions by country and year
@@ -40,17 +39,46 @@ year_country_data <- nuclear_explosions %>%
   group_by(year, country) %>%
   summarize(n = n())
 
-# Create ggplot object that displays nuclear explosions per year by country
+# Create plotly object that displays nuclear explosions per year by country
 p1 <- plot_ly(data = year_country_data,
               x = ~year,
               y = ~n,
               type = "bar",
               color = ~country,
-              text = ~country,
-              hovertemplate = "%{x}<br>%{text}: %{y}<extra></extra>") %>%
+              text = ~paste0(year, "<br>", country, ":", n),
+              hoverinfo = "text") %>%
   layout(barmode = "stack")
 
 p1
 
 ```
+
+### Explosions Global Distribution
+```{r}
+
+# Create plotly object that shows locations of all explosions
+p2 <- plot_geo(nuclear_explosions, sizes = c(10,500)) %>%
+  add_markers(x = ~longitude,
+              y = ~latitude,
+              color = ~country,
+              size = ~yield_lower,
+              text = ~paste0(year, "<br>", country, "<br>", yield_lower, " kilotons TNT"),
+              hoverinfo = "text") %>%
+  layout(title = list(text = "Global Nuclear Explosions from 1945 to 1998", font = list(size = 20), y = 0.96),
+         legend = list(y = 0.85),
+         geo = list(showcountries = TRUE, showland = TRUE, showocean = TRUE, landcolor = "bbdaa4", oceancolor = "a7cdf2"),
+         margin = list(t = 0, b = 0, l = 10, r = 10))
+
+p2
+
+```
+
+
+
+
+
+
+
+
+
 
