@@ -81,7 +81,8 @@ p2 <- plot_ly(data = type_data,
               textinfo = "percent",
               text = ~paste0(type, "<br>", n, " events<br>"),
               hoverinfo = "text") %>%
-  layout(title = "Type Distribution of Global Nuclear Explosions (1945-1998)")
+  layout(title = "Type Distribution of Global Nuclear Explosions (1945-1998)",
+         margin = list(t=50))
 
 p2
 
@@ -99,10 +100,10 @@ p3 <- plot_geo(nuclear_explosions, sizes = c(10,500)) %>%
               size = ~yield_lower,
               text = ~paste0(year, "<br>", country, "<br>", yield_lower, " kilotons TNT"),
               hoverinfo = "text") %>%
-  layout(title = list(text = "Global Nuclear Explosions (1945-1998)", font = list(size = 20), y = 0.96),
+  layout(title = list(text = "Global Nuclear Explosions (1945-1998)<br><sub>Point size scales with magnitude of explosion</sub>"),
          legend = list(y = 0.85),
          geo = list(showcountries = TRUE, showland = TRUE, showocean = TRUE, landcolor = "bbdaa4", oceancolor = "a7cdf2"),
-         margin = list(t = 0, b = 0, l = 10, r = 10))
+         margin = list(t = 50, b = 0, l = 10, r = 10))
 
 p3
 
